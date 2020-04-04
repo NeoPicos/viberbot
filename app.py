@@ -42,7 +42,6 @@ def index():
 # Страница настройки параметров бота
 @app.route('/settings', methods=['GET'])
 def settings():
-    build_db_struct()
     # Отрисовка шаблона
     return render_template("request_page.html")
 
@@ -74,8 +73,6 @@ def settings_done():
 # Обработка приходящих запросов
 @app.route('/incoming', methods=['POST'])
 def incoming():
-    build_db_struct()
-    
     # Входящий запрос
     viber_request = viber.parse_request(request.get_data())
 
