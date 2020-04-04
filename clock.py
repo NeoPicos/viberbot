@@ -11,11 +11,5 @@ sched = BlockingScheduler()
 def do_reminder():
     check_user_time()
 
-
-# Фиктивный запрос
-@sched.scheduled_job('interval', minutes=1)
-def do_request_to_server():
-    requests.get(URL)
-
-
+    
 sched.start()
