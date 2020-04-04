@@ -77,7 +77,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(types.String(), primary_key=True)
-    time_last_answer = Column(types.DATETIME)
+    time_last_answer = Column(types.DateTime)
     num_round_question = Column(types.INTEGER)
     num_answer = Column(types.INTEGER)
     current_word = Column(types.String())
@@ -286,7 +286,7 @@ class Learning(Base):
     user_id = Column(types.String(), ForeignKey('user.id', ondelete='CASCADE'))
     word = Column(types.String(), ForeignKey('word.word', ondelete='CASCADE'))
     num_correct = Column(types.INTEGER, default=0)
-    time_last_answer = Column(types.DATETIME)
+    time_last_answer = Column(types.DateTime)
 
     # Добавление новой записи
     def add(self, viber_id: str, word: str):
