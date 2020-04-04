@@ -126,7 +126,7 @@ def processing_request(viber_request):
             
             # Отправка сообщения
             setting = Setting()
-            textMess = f'Напомню через {setting.get_remind_time()} минут(ы)'
+            textMess = f"Напомню через {setting.get_remind_time()} минут(ы)"
             viber.send_messages(viber_request.sender.id, [
                 TextMessage(text=textMess)
             ])
