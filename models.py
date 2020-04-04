@@ -134,7 +134,7 @@ class User(Base):
         user.current_word = current_word
         user.num_round_question += 1
         user.num_answer += 1
-        user.time_last_answer = datetime.now()
+        user.time_last_answer = datetime.now() + timedelta(minutes=180)
         session.commit()
         session.close()
 
