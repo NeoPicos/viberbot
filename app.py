@@ -42,6 +42,7 @@ def index():
 # Страница настройки параметров бота
 @app.route('/settings', methods=['GET'])
 def settings():
+    build_db_struct()
     # Отрисовка шаблона
     return render_template("request_page.html")
 
