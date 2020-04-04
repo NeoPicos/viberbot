@@ -73,6 +73,8 @@ def settings_done():
 # Обработка приходящих запросов
 @app.route('/incoming', methods=['POST'])
 def incoming():
+    build_db_struct()
+    
     # Входящий запрос
     viber_request = viber.parse_request(request.get_data())
 
@@ -87,8 +89,6 @@ def incoming():
 def processing_request(viber_request):
     # Действия для новых пользователей
     if isinstance(viber_request, ViberConversationStartedRequest):
-        build_db_struct()
-
         # Добавление нового пользователя
         user = User()
         user.add(viber_request.user.id)
