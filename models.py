@@ -201,6 +201,7 @@ class User(Base):
         # Check User.last_time_answer for remind
         id_list = []
         for user in users:
+            print(user.time_last_answer)
             delta_time = datetime.now() - user.time_last_answer
             delta_time_minute = delta_time.days * 24 * 60 + delta_time.seconds // 60
 
