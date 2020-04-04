@@ -123,10 +123,12 @@ def processing_request(viber_request):
             # Изменить время последнего ответа на текущее
             user = User()
             user.set_time_last_answer(viber_request.sender.id)
-
+            
             # Отправка сообщения
+            setting = Setting()
+            textMess = f'Напомню через {setting.get_remind_time()} минут(ы)'
             viber.send_messages(viber_request.sender.id, [
-                TextMessage(text='Напомню позже!')
+                TextMessage(text=textMess)
             ])
             return
 
