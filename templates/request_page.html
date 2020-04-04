@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Настройка</title>
+</head>
+<body>
+    <h1>Настройка параметров бота</h1>
+    <form method = "GET" action = "/settings_done">
+        <p>
+            <lable for = "search_word">Время, через которое бот будет напоминанть о необходимости повторить слова:</lable>
+            <input type = "text" name = "remind_time">
+        </p>
+
+        <p>
+            <lable for = "count">Количество слов в одном раунде:</lable>
+            <input type = "text" name = "total_count">
+        </p>
+
+        <p>
+            <lable for = "count">Количество правильных ответов, после которых считается, что слово выучено:</lable>
+            <input type = "text" name = "limit_words_for_learning">
+        </p>
+
+        <p>
+            <input type = "submit" value = "Сохранить">
+        </p>
+
+    </form>
+</body>
+</html>
