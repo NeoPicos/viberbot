@@ -8,7 +8,7 @@ import json
 Base = declarative_base()
 
 # Подключение к БД
-engine = create_engine('sqlite:///viberDB.db', echo=True)
+engine = create_engine('postgres://yldafqgcqdvxko:ae7661e9d7961c95a60b4eb43f2f7b79e6cd1100d299c547340b9e21b4279bbc@ec2-176-34-97-213.eu-west-1.compute.amazonaws.com:5432/dbifaircjq3vp5', echo=True)
 
 metadata = MetaData()
 
