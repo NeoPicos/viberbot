@@ -262,21 +262,24 @@ def send_example_message(viber_request):
                     tracking_data='tracking_data')
     ])
 
-
 # Проверка ответа на правильность
 def check_answer(viber_request):
     # Получить правильный ответ
     word = Word()
     user = User()
     correct_answer = word.get_translation(user.get_current_word(viber_request.sender.id))
-
-    answer = str(viber_request.message.text).split(' ')
-    num_question = int(answer[0]) + 1
-    ans = answer[1]
     
-    if num_question == user.get_num_question(viber_request.sender.id):
-        return
-    if answer == correct_answer and num_question == user.get_num_question(viber_request.sender.id):
+    # Разбор входящего приложения на токены
+    tokens = viber_request.message.text
+    
+    # Токен 1 - номер вопроса
+    num = tokens[0]
+    
+    # Токен 2 - ответ
+    ans = tokens[1]
+    
+
+    if ans == correct_answer:
         # Правильный ответ - зафиксировать в данных раунда
         user = User()
         user.inc_correct_answer(viber_request.sender.id)
@@ -291,10 +294,10 @@ def check_answer(viber_request):
         message = "Ваш ответ: [" + str(correct_answer) + "]. Правильно! Слово отгадано: " + str(
             num_correct_answer) + " раз."
     else:
-        message = "Ваш ответ: [" + ans + "]. Неправильно!"
+        message = "Ваш ответ: [" + str(ans) + "]. Неправильно!"
 
     viber.send_messages(viber_request.sender.id, [
-        TextMessage(text=message + str(num_question))
+        TextMessage(text=message + "[" + num + "]")
     ])
 
 
