@@ -289,7 +289,7 @@ def check_answer(viber_request):
         message = "Ваш ответ: [" + str(correct_answer) + "]. Правильно! Слово отгадано: " + str(
             num_correct_answer) + " раз."
     else:
-        message = "Ваш ответ: [" + str(viber_request.message.text) + "]. Неправильно!"
+        message = "Ваш ответ: [" + ans + "]. Неправильно!"
 
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
