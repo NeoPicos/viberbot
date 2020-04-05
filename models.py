@@ -81,7 +81,7 @@ class User(Base):
     num_round_question = Column(types.INTEGER)
     num_answer = Column(types.INTEGER)
     current_word = Column(types.String())
-    last_token = Column(types.String)
+    last_token = Column(types.String())
     num_round_correct_answer = Column(types.INTEGER)
 
     # Добавление нового пользователя
