@@ -92,7 +92,7 @@ def processing_request(viber_request):
         user = User()
         user.add(viber_request.user.id)
 
-        user.set_last_message_token(viber_request.user.id, viber_request.message_token)
+        user.set_last_message_token(viber_request.user.id, str(viber_request.message_token))
 
         # Вывод стартового окна
         show_start_area(viber_request)
