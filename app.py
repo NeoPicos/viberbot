@@ -248,17 +248,19 @@ def send_example_message(viber_request):
                     tracking_data='tracking_data')
     ])
 
-
 # Проверка ответа на правильность
 def check_answer(viber_request):
     # Получить правильный ответ
     word = Word()
     user = User()
     correct_answer = word.get_translation(user.get_current_word(viber_request.sender.id))
-    
+
     answer = str(viber_request.message.text).split(' ')
     answer_num_question = int(answer[0])
     ans = answer[1]
+    
+    if answer_num_question != user.get_num_question(viber_request.sender.id) + 1:
+        return
     
     if ans == correct_answer:
         # Правильный ответ - зафиксировать в данных раунда
