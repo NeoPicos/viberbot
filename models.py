@@ -8,7 +8,7 @@ import json
 Base = declarative_base()
 
 # Подключение к БД
-engine = create_engine('postgres://gfctnifkhemtiv:37f51fd73f1661cf2e439f4be9ba4d5e2bbfbbe36ce527c586badaa2c35be5da@ec2-176-34-97-213.eu-west-1.compute.amazonaws.com:5432/d2i5jskl01pudr', echo=True)
+engine = create_engine('sqlite:///viberDB.db', echo=True)
 
 metadata = MetaData()
 
@@ -81,6 +81,7 @@ class User(Base):
     num_round_question = Column(types.INTEGER)
     num_answer = Column(types.INTEGER)
     current_word = Column(types.String())
+    last_token = Column(types.String)
     num_round_correct_answer = Column(types.INTEGER)
 
     # Добавление нового пользователя
@@ -92,6 +93,7 @@ class User(Base):
                         num_round_question=0,
                         num_answer=0,
                         current_word='',
+                        last_token = '',
                         num_round_correct_answer=0)
 
         try:
@@ -111,6 +113,25 @@ class User(Base):
             for word in words:
                 learning = Learning()
                 learning.add(viber_id, word[0])
+
+    # Установить токен последнего сообщения для пользователя
+    def set_last_message_token(self, viber_id, token):
+        session = Session()
+
+        user = session.query(User).filter(User.id == viber_id)
+        user.last_token = token
+
+        session.commit()
+        session.close()
+
+    # Получить токен последнего сообщения
+    def get_last_message_token(self, viber_id):
+        session = Session()
+
+        token = session.query(User.last_token).filter(User.id == viber_id)
+        session.close()
+
+        return token
 
     # Сброс данных раунда
     def reset_round(self, viber_id):
@@ -345,4 +366,3 @@ def build_db_struct():
 
     # Инициализация настроек бота
     Setting.create_item()
-
