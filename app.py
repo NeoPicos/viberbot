@@ -274,7 +274,7 @@ def check_answer(viber_request):
     num_question = answer[0]
     ans = answer[1]
     
-    if num_question == user.get_num_question(viber_request.sender.id)
+    if num_question == user.get_num_question(viber_request.sender.id):
         return
     if answer == correct_answer and num_question == user.get_num_question(viber_request.sender.id):
         # Правильный ответ - зафиксировать в данных раунда
