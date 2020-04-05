@@ -25,12 +25,6 @@ viber = Api(BotConfiguration(
     auth_token=TOKEN
 ))
 
-# Кеш слов для изучения (key: viber_id, value: list of learning words)
-word_cash = {}
-
-# Кеш для токенов сообщений
-mess_token_cash = {}
-
 
 # Страница с информацией о боте
 @app.route('/')
@@ -91,7 +85,7 @@ def processing_request(viber_request):
         user = User()
         user.add(viber_request.user.id)
 
-        user.set_last_message_token(viber_request.user.id, str(viber_request.message_token))
+        user.set_last_message_token(viber_request.user.id, viber_request.message_token)
 
         # Вывод стартового окна
         show_start_area(viber_request)
@@ -110,10 +104,6 @@ def processing_request(viber_request):
         if message == 'start':
             user = User()
             user.reset_round(viber_request.sender.id)
-
-            # Закешировать слова для изучения
-            word_cash[viber_request.sender.id] = WordsCash(viber_request.sender.id)
-            word_cash[viber_request.sender.id].cash_learning_words()
 
             # Вывод второго игрового окна
             show_round_area(viber_request)
@@ -149,9 +139,6 @@ def processing_request(viber_request):
                 show_round_area(viber_request)
                 return
             else:
-                # Обновить данные из кеша
-                word_cash[viber_request.sender.id].cash_learning_words()
-
                 # Завершение рунда
                 send_result_message(viber_request)
                 user.reset_round(viber_request.sender.id)
@@ -182,7 +169,8 @@ def show_start_area(viber_request):
 # Отправка "второго" игрового экрана
 def show_round_area(viber_request):
     # Список еще не выученных слов
-    study_words = word_cash[viber_request.sender.id].words_list
+    learning = Learning()
+    study_words = learning.get_study_words(viber_request.sender.id)
 
     # Текущее слово
     current_word = study_words[random.randint(0, len(study_words) - 1)]
@@ -214,6 +202,7 @@ def send_question_message(viber_request, word):
                     tracking_data='tracking_data')
     ])
 
+
 # Динамическая настройка клавиатуры
 def set_round_keyboard(viber_request, correct_translation, word_list):
     # Три случайных слова
@@ -221,9 +210,9 @@ def set_round_keyboard(viber_request, correct_translation, word_list):
 
     # Случайная последовательность для нумерации кнопок
     rand_num = random.sample([0, 1, 2, 3], 4)
-    
+
     user = User()
-    
+
     # Установка правильного ответа на случайную кнопку
     round_keyboard["Buttons"][rand_num[0]]["Text"] = correct_translation
     round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = correct_translation
@@ -241,7 +230,7 @@ def set_round_keyboard(viber_request, correct_translation, word_list):
     wrong_translation = word.get_translation(wrong_words[2])
     round_keyboard["Buttons"][rand_num[3]]["Text"] = wrong_translation
     round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = wrong_translation
-    
+
 
 # Показать пример использования слова
 def send_example_message(viber_request):
@@ -260,6 +249,7 @@ def send_example_message(viber_request):
                     keyboard=round_keyboard,
                     tracking_data='tracking_data')
     ])
+
 
 # Проверка ответа на правильность
 def check_answer(viber_request):
@@ -288,6 +278,21 @@ def check_answer(viber_request):
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
     ])
+
+
+# Отправка сообщения с результатами
+def send_result_message(viber_request):
+    # Сообщить количество правильных и неправильных слов
+    user = User()
+    settings = Setting()
+    message = "Конец раунда. Правильных ответов из " + str(settings.get_lim_question()) + ": " + str(
+        user.get_round_correct_answer(viber_request.sender.id))
+
+    # Отправка сообщения
+    viber.send_messages(viber_request.sender.id, [
+        TextMessage(text=message)
+    ])
+
 
 # Сделать напоминание
 def remind(viber_id):
