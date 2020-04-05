@@ -294,7 +294,7 @@ def check_answer(viber_request):
         message = "Ваш ответ: [" + ans + "]. Неправильно!"
 
     viber.send_messages(viber_request.sender.id, [
-        TextMessage(text=message)
+        TextMessage(text=message + str(num_question))
     ])
 
 
