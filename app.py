@@ -271,7 +271,7 @@ def check_answer(viber_request):
     correct_answer = word.get_translation(user.get_current_word(viber_request.sender.id))
 
     answer = str(viber_request.message.text).split(' ')
-    num_question = answer[0] + str(1)
+    num_question = int(answer[0]) + 1
     ans = answer[1]
     
     if num_question == user.get_num_question(viber_request.sender.id):
