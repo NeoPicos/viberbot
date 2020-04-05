@@ -191,7 +191,7 @@ def show_round_area(viber_request):
     word = Word()
     translation = word.get_translation(current_word)
     study_words.remove(current_word)
-    set_round_keyboard(translation, study_words)
+    set_round_keyboard(viber_request, translation, study_words)
 
     # Отправка сообщения с вопросом
     send_question_message(viber_request, current_word)
@@ -216,30 +216,32 @@ def send_question_message(viber_request, word):
 
 
 # Динамическая настройка клавиатуры
-def set_round_keyboard(correct_translation, word_list):
+def set_round_keyboard(viber_request, correct_translation, word_list):
     # Три случайных слова
     wrong_words = random.sample(word_list, 3)
 
     # Случайная последовательность для нумерации кнопок
     rand_num = random.sample([0, 1, 2, 3], 4)
 
+    user = User()
+
     # Установка правильного ответа на случайную кнопку
     round_keyboard["Buttons"][rand_num[0]]["Text"] = correct_translation
-    round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = correct_translation
+    round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id)) + ' ' + correct_translation
 
     # Расстановка неправильных слов на случайную кнопку
     word = Word()
     wrong_translation = word.get_translation(wrong_words[0])
     round_keyboard["Buttons"][rand_num[1]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[1]]["ActionBody"] = wrong_translation
+    round_keyboard["Buttons"][rand_num[1]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id)) + ' ' + wrong_translation
 
     wrong_translation = word.get_translation(wrong_words[1])
     round_keyboard["Buttons"][rand_num[2]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[2]]["ActionBody"] = wrong_translation
+    round_keyboard["Buttons"][rand_num[2]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id)) + ' ' + wrong_translation
 
     wrong_translation = word.get_translation(wrong_words[2])
     round_keyboard["Buttons"][rand_num[3]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = wrong_translation
+    round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id)) + ' ' + wrong_translation
 
 
 # Показать пример использования слова
@@ -268,7 +270,11 @@ def check_answer(viber_request):
     user = User()
     correct_answer = word.get_translation(user.get_current_word(viber_request.sender.id))
 
-    if viber_request.message.text == correct_answer:
+    answer = str(viber_request.message.text).split(' ')
+    num_question = answer[0]
+    ans = answer[1]
+
+    if answer == correct_answer and num_question == user.get_num_question(viber_request.sender.id):
         # Правильный ответ - зафиксировать в данных раунда
         user = User()
         user.inc_correct_answer(viber_request.sender.id)
