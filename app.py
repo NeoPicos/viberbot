@@ -12,7 +12,7 @@ from time import sleep
 from flask import render_template
 from flask import request
 from flask import make_response
-from cash import WordsCash, MessageTokenCash
+from cash import WordsCash
 from models import build_db_struct
 
 # Инициализация Flask-приложения
@@ -25,12 +25,12 @@ viber = Api(BotConfiguration(
     auth_token=TOKEN
 ))
 
-
 # Кеш слов для изучения (key: viber_id, value: list of learning words)
 word_cash = {}
 
 # Кеш для токенов сообщений
 mess_token_cash = {}
+
 
 # Страница с информацией о боте
 @app.route('/')
@@ -91,7 +91,7 @@ def processing_request(viber_request):
         user = User()
         user.add(viber_request.user.id)
 
-        mess_token_cash[viber_request.user.id] = MessageTokenCash(viber_request.user.id)
+        user.set_last_message_token(viber_request.user.id, viber_request.message_token)
 
         # Вывод стартового окна
         show_start_area(viber_request)
@@ -99,10 +99,11 @@ def processing_request(viber_request):
 
     # Действия для подписавшихся пользователей
     if isinstance(viber_request, ViberMessageRequest):
-        if viber_request.message_token == mess_token_cash[viber_request.sender.id].last_token:
+        user = User()
+        if viber_request.message_token == user.get_last_message_token(viber_request.sender.id):
             return
         else:
-            mess_token_cash[viber_request.sender.id].last_token = viber_request.message_token
+           user.set_last_message_token(viber_request.sender.id, viber_request.message_token)
 
         # Обработка команды 'start': запуск нового раунда
         message = viber_request.message.text
@@ -123,7 +124,7 @@ def processing_request(viber_request):
             # Изменить время последнего ответа на текущее
             user = User()
             user.set_time_last_answer(viber_request.sender.id)
-            
+
             # Отправка сообщения
             setting = Setting()
             textMess = f"Напомню через {str(setting.get_remind_time())} минут(ы)"
@@ -204,7 +205,8 @@ def show_round_area(viber_request):
 def send_question_message(viber_request, word):
     # Формирование ответного сообщения
     user = User()
-    message = str(user.get_num_question(viber_request.sender.id) + 1) + ")" + f" Как переводится с английского слово [{word}]?"
+    message = str(
+        user.get_num_question(viber_request.sender.id) + 1) + ")" + f" Как переводится с английского слово [{word}]?"
 
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message,
@@ -252,7 +254,6 @@ def send_example_message(viber_request):
     count_examples = len(example_list)
     example = example_list[random.randint(0, count_examples - 1)]
 
-
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=example,
                     keyboard=round_keyboard,
@@ -277,10 +278,12 @@ def check_answer(viber_request):
         learn.mark_correct_answer(viber_request.sender.id, user.get_current_word(viber_request.sender.id))
 
         # Получить количество правильных ответов на данный вопрос
-        num_correct_answer = learn.get_num_correct_answer(viber_request.sender.id, user.get_current_word(viber_request.sender.id))
-        message = "Ваш ответ: [" + str(correct_answer) + "]. Правильно! Слово отгадано: " + str(num_correct_answer) + " раз."
+        num_correct_answer = learn.get_num_correct_answer(viber_request.sender.id,
+                                                          user.get_current_word(viber_request.sender.id))
+        message = "Ваш ответ: [" + str(correct_answer) + "]. Правильно! Слово отгадано: " + str(
+            num_correct_answer) + " раз."
     else:
-        message = "Ваш ответ: [" + str(viber_request.message.text) +  "]. Неправильно!"
+        message = "Ваш ответ: [" + str(viber_request.message.text) + "]. Неправильно!"
 
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
@@ -292,7 +295,8 @@ def send_result_message(viber_request):
     # Сообщить количество правильных и неправильных слов
     user = User()
     settings = Setting()
-    message = "Конец раунда. Правильных ответов из " + str(settings.get_lim_question()) + ": " + str(user.get_round_correct_answer(viber_request.sender.id))
+    message = "Конец раунда. Правильных ответов из " + str(settings.get_lim_question()) + ": " + str(
+        user.get_round_correct_answer(viber_request.sender.id))
 
     # Отправка сообщения
     viber.send_messages(viber_request.sender.id, [
@@ -309,7 +313,7 @@ def remind(viber_id):
                     keyboard=remind_keyboard,
                     tracking_data='tracking_data')
     ])
-    
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=90)
