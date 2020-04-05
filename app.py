@@ -214,22 +214,21 @@ def set_round_keyboard(viber_request, correct_translation, word_list):
 
     # Установка правильного ответа на случайную кнопку
     round_keyboard["Buttons"][rand_num[0]]["Text"] = correct_translation
-    round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) +  correct_translation
+    round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + " " + correct_translation
 
     # Расстановка неправильных слов на случайную кнопку
     word = Word()
     wrong_translation = word.get_translation(wrong_words[0])
     round_keyboard["Buttons"][rand_num[1]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[1]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + wrong_translation
+    round_keyboard["Buttons"][rand_num[1]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + " " + wrong_translation
 
     wrong_translation = word.get_translation(wrong_words[1])
     round_keyboard["Buttons"][rand_num[2]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[2]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + wrong_translation
+    round_keyboard["Buttons"][rand_num[2]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + " " + wrong_translation
 
     wrong_translation = word.get_translation(wrong_words[2])
     round_keyboard["Buttons"][rand_num[3]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + wrong_translation
-
+    round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = str(user.get_num_question(viber_request.sender.id) + 1) + " " + wrong_translation
 
 # Показать пример использования слова
 def send_example_message(viber_request):
