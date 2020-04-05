@@ -4,7 +4,7 @@ import requests
 from settings import URL
 
 sched_remind = BlockingScheduler()
-sched_request = BlockingCheduler()
+sched_request = BlockingSheduler()
 
 # Напоминание
 @sched_remind.scheduled_job('interval', minutes=1)
