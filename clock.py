@@ -9,7 +9,6 @@ sched = BlockingScheduler()
 @sched.scheduled_job('interval', minutes=1)
 def do_reminder():
     check_user_time()
-    requests.get(URL)
 
     
 sched.start()
