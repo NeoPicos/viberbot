@@ -265,7 +265,10 @@ def check_answer(viber_request):
     num_q = mess_tokens[0]
     ans_q = mess_tokens[1]
 
-    if num_q != user.get_num_question(viber_request.sender.id):
+    print(mess_tokens)
+    print(mess_tokens[0] != str(user.get_num_question(viber_request.sender.id)))
+
+    if int(num_q) != user.get_num_question(viber_request.sender.id):
         return
 
     if ans_q == correct_answer:
@@ -288,7 +291,6 @@ def check_answer(viber_request):
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
     ])
-
 
 # Отправка сообщения с результатами
 def send_result_message(viber_request):
