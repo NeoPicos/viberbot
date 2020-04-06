@@ -130,7 +130,9 @@ def processing_request(viber_request):
             send_example_message(viber_request)
         else:
             # Проверка ответа на правильность
-            check_answer(viber_request)
+            flag = check_answer(viber_request)
+            if flag == 'stop':
+                return
 
             setting = Setting()
             total_count = setting.get_lim_question()
@@ -201,7 +203,8 @@ def send_question_message(viber_request, word):
                     keyboard=round_keyboard,
                     tracking_data='tracking_data')
     ])
-    
+
+
 # Динамическая настройка клавиатуры
 def set_round_keyboard(viber_request, correct_translation, word_list):
     # Три случайных слова
@@ -242,7 +245,7 @@ def send_example_message(viber_request):
     current_word = user.get_current_word(viber_request.sender.id)
     example_list = ex.get_examples(current_word)
 
-    # Выбор члучайного примера из списка
+    # Выбор случайного примера из списка
     count_examples = len(example_list)
     example = example_list[random.randint(0, count_examples - 1)]
 
@@ -269,7 +272,7 @@ def check_answer(viber_request):
     print(mess_tokens[0] != str(user.get_num_question(viber_request.sender.id)))
 
     if int(num_q) != user.get_num_question(viber_request.sender.id):
-        return
+        return 'stop'
 
     if ans_q == correct_answer:
         # Правильный ответ - зафиксировать в данных раунда
@@ -291,6 +294,7 @@ def check_answer(viber_request):
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
     ])
+
 
 # Отправка сообщения с результатами
 def send_result_message(viber_request):
