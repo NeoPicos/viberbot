@@ -213,7 +213,7 @@ def set_round_keyboard(viber_request, correct_translation, word_list):
     user = User()
 
     # Получить номер тесущего вопроса
-    num_question = user.get_num_question(viber_request.sender.id) + 1
+    num_question = str(user.get_num_question(viber_request.sender.id) + 1)
 
     # Установка правильного ответа на случайную кнопку
     round_keyboard["Buttons"][rand_num[0]]["Text"] = correct_translation
