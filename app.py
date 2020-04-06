@@ -212,23 +212,26 @@ def set_round_keyboard(viber_request, correct_translation, word_list):
 
     user = User()
 
+    # Получить номер тесущего вопроса
+    num_question = user.get_num_question(viber_request.sender.id) + 1
+
     # Установка правильного ответа на случайную кнопку
     round_keyboard["Buttons"][rand_num[0]]["Text"] = correct_translation
-    round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = correct_translation
+    round_keyboard["Buttons"][rand_num[0]]["ActionBody"] = num_question + correct_translation
 
     # Расстановка неправильных слов на случайную кнопку
     word = Word()
     wrong_translation = word.get_translation(wrong_words[0])
     round_keyboard["Buttons"][rand_num[1]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[1]]["ActionBody"] = wrong_translation
+    round_keyboard["Buttons"][rand_num[1]]["ActionBody"] = num_question + wrong_translation
 
     wrong_translation = word.get_translation(wrong_words[1])
     round_keyboard["Buttons"][rand_num[2]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[2]]["ActionBody"] = wrong_translation
+    round_keyboard["Buttons"][rand_num[2]]["ActionBody"] = num_question +  wrong_translation
 
     wrong_translation = word.get_translation(wrong_words[2])
     round_keyboard["Buttons"][rand_num[3]]["Text"] = wrong_translation
-    round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = wrong_translation
+    round_keyboard["Buttons"][rand_num[3]]["ActionBody"] = num_question + wrong_translation
 
 
 # Показать пример использования слова
@@ -257,7 +260,15 @@ def check_answer(viber_request):
     user = User()
     correct_answer = word.get_translation(user.get_current_word(viber_request.sender.id))
 
-    if viber_request.message.text == correct_answer:
+    # Разбор сообщения на токены
+    mess_tokens = str(viber_request.message.text).split(' ')
+    num_q = mess_tokens[0]
+    ans_q = mess_tokens[1]
+
+    if num_q != user.get_num_question(viber_request.sender.id):
+        return
+
+    if ans_q == correct_answer:
         # Правильный ответ - зафиксировать в данных раунда
         user = User()
         user.inc_correct_answer(viber_request.sender.id)
@@ -272,7 +283,7 @@ def check_answer(viber_request):
         message = "Ваш ответ: [" + str(correct_answer) + "]. Правильно! Слово отгадано: " + str(
             num_correct_answer) + " раз."
     else:
-        message = "Ваш ответ: [" + str(viber_request.message.text) + "]. Неправильно!"
+        message = "Ваш ответ: [" + str(ans_q) + "]. Неправильно!"
 
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
