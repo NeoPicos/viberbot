@@ -294,6 +294,7 @@ def check_answer(viber_request):
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
     ])
+    return
 
 
 # Отправка сообщения с результатами
