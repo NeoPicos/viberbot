@@ -77,6 +77,7 @@ def incoming():
     return Response(status=200)
 
 
+# Обработка запроса от пользователя
 def processing_request(viber_request):
     # Действия для новых пользователей
     if isinstance(viber_request, ViberConversationStartedRequest):
@@ -145,6 +146,26 @@ def processing_request(viber_request):
                 user.reset_round(viber_request.sender.id)
                 show_start_area(viber_request)
                 return
+
+
+# Вывод стартовой клавитуры и приветствие
+def show_start_area(viber_request):
+    # Выделение идентификатора пользователя
+    if isinstance(viber_request, ViberConversationStartedRequest):
+        user_id = viber_request.user.id
+    else:
+        user_id = viber_request.sender.id
+
+    # Приветственное сообщение
+    message = "Этот бот предназначен для заучивания английских слов." \
+              " Для начала работы введите start или нажмите на кнопку внизу."
+
+    viber.send_messages(user_id, [
+        TextMessage(text=message,
+                    keyboard=start_keyboard,
+                    tracking_data='tracking_data')
+    ])
+    return
 
 
 # Отправка "второго" игрового экрана
@@ -251,6 +272,7 @@ def check_answer(viber_request):
     print(mess_tokens[0] != str(user.get_num_question(viber_request.sender.id)))
 
     if int(num_q) != user.get_num_question(viber_request.sender.id):
+        print('------------------------------------------stop--------------------------------------------')
         return 'stop'
 
     if ans_q == correct_answer:
@@ -273,6 +295,8 @@ def check_answer(viber_request):
     viber.send_messages(viber_request.sender.id, [
         TextMessage(text=message)
     ])
+
+
 
 
 # Отправка сообщения с результатами
