@@ -94,7 +94,7 @@ def processing_request(viber_request):
     # Действия для подписавшихся пользователей
     if isinstance(viber_request, ViberMessageRequest):
         user = User()
-        if viber_request.message_token == user.get_last_message_token(viber_request.sender.id) and viber_request.message.text != 'show_example':
+        if viber_request.message_token == user.get_last_message_token(viber_request.sender.id):
             return
         else:
            user.set_last_message_token(viber_request.sender.id, viber_request.message_token)
@@ -144,6 +144,7 @@ def processing_request(viber_request):
                 # Завершение рунда
                 send_result_message(viber_request)
                 user.reset_round(viber_request.sender.id)
+                print('Сброс данных раунда!')
                 show_start_area(viber_request)
                 return
 
