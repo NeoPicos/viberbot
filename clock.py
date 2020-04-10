@@ -6,7 +6,7 @@ from settings import URL
 sched = BlockingScheduler()
 
 # Напоминание
-@sched.scheduled_job('interval', minutes=1)
+@sched.scheduled_job('interval', seconds=5)
 def do_reminder():
     check_user_time()
     requests.get(URL)
