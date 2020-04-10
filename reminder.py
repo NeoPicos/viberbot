@@ -14,6 +14,8 @@ def check_user_time():
     # Отправить пользователям сообщение-напоминание
     for id in id_list:
         remind(str(id))
+    
+    id_list.clear()
 
 
 
