@@ -36,8 +36,14 @@ def index():
 # Страница настройки параметров бота
 @app.route('/settings', methods=['GET'])
 def settings():
+    # Получить параметры бота
+    setting = Setting()
+
     # Отрисовка шаблона
-    return render_template("request_page.html")
+    return render_template("request_page.html",
+                           time=setting.get_remind_time(),
+                           count_q=setting.get_lim_question(),
+                           count_learning=setting.get_num_correct())
 
 
 # Страница успешной установки параметров бота
