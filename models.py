@@ -8,7 +8,7 @@ import json
 Base = declarative_base()
 
 # Подключение к БД
-engine = create_engine('postgres://kqjxghusayivzx:3a4d2aa58fcb4ebd3397ea285f74777de7db6534d9e89ef0c38f7337e9c0da72@ec2-54-247-125-38.eu-west-1.compute.amazonaws.com:5432/d20j4es82oscb9', echo=True)
+engine = create_engine('postgres://vfbximivzhpnok:31efd64f7a0ebb2b3f8567718853805c2df0d0c02d61819b6815cb303c6ef6f1@ec2-46-137-177-160.eu-west-1.compute.amazonaws.com:5432/d4sgfh4nhdds2e', echo=True)
 
 metadata = MetaData()
 
