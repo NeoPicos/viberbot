@@ -227,7 +227,7 @@ class User(Base):
             delta_time_minute = delta_time.days * 24 * 60 + delta_time.seconds // 60
 
             # Save remind user.id
-            if delta_time_minute >= remind_time:
+            if delta_time_minute + 1 >= remind_time:
                 id_list.append(user.id)
 
         session.close()
