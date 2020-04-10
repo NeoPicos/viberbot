@@ -261,8 +261,6 @@ def send_example_message(viber_request):
                     keyboard=round_keyboard,
                     tracking_data='tracking_data')
     ])
-    
-    show_round_area(viber_request)
 
 
 # Проверка ответа на правильность
