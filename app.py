@@ -323,6 +323,9 @@ def send_result_message(viber_request):
 # Сделать напоминание
 def remind(viber_id):
     message = 'Привет! Повтори слова, чтобы не забыть их!'
+    
+    user = User()
+    user.set_time_last_answer(viber_id)
 
     viber.send_messages(viber_id, [
         TextMessage(text=message,
