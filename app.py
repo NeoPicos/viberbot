@@ -73,6 +73,7 @@ def settings_done():
 # Обработка приходящих запросов
 @app.route('/incoming', methods=['POST'])
 def incoming():
+    build_db_struct()
     # Входящий запрос
     viber_request = viber.parse_request(request.get_data())
 
